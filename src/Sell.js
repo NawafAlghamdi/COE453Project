@@ -1,32 +1,33 @@
-//import { json } from "express";
-import React, { useState } from "react";
-
+import { useState } from "react";
 
 const Sell = () => {
-    const [Name, setName] = useState('');
-    const [Price, setPrice] = useState();
-    const [Description, setDescription] = useState('');
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState(0);
+    const [description, setDescription] = useState('');
 
-  /* const handle = (e) => {
-        e.preventDefault();
-        const item = {Name, Price, Description}
-
-        fetch('/', {
-            method: 'Post',
-            headers: { " Content-Type" : "application/json"},
-            body: JSON.stringify(item )
+    const handleSubmit = (e) => {
+        const item = {name, price, description}
+    
+        fetch('http://localhost:5000/', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(item)
+        }).then(() => {
+          console.log('new item added');
         })
-    }*/
+      }
+
+
     return ( 
         <div className="Sell">
             <h1>Sell page</h1>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label>Meal Name</label>
-                <input type="text" required value={Name} onChange={(e) => setName(e.target.value)}/>
+                <input type="text" required value={name} onChange={(e) => setName(e.target.value)}/>
                 <label>Price</label>
-                <input type="number" required value={Price} onChange={(e) => setPrice(e.target.value)} />
+                <input type="number" required value={price} onChange={(e) => setPrice(e.target.value)} />
                 <label>Description</label>
-                <textarea required value={Description} onChange={(e) => setDescription(e.target.value)}></textarea>
+                <textarea required value={description} onChange={(e) => setDescription(e.target.value)}></textarea>
                 <button >Submit</button>
             </form>
         </div>
