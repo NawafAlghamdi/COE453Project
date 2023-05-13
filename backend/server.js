@@ -1,11 +1,21 @@
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const { graphqlHTTP } = require('express-graphql');
+const { GraphQLSchema } = require('graphql');
+const { MealType, RootQueryType, RootMutationType } = require('./models/GraphqlSchema');
+
+
+// Define the root resolver for the schema
+const rootResolver = {
+  ...RootQueryType.fields,
+  ...RootMutationType.fields,
+};
 
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
 app.use(cors());
 app.use(express.json());
@@ -21,7 +31,17 @@ connection.once('open', () => {
 const mealsRouter = require('./routes/meals');
 
 app.use('/', mealsRouter);
-// app.use('/sell', mealsRouter);
+app.use(
+  '/graphql',
+  graphqlHTTP({
+    schema: new GraphQLSchema({
+      query: RootQueryType,
+      mutation: RootMutationType,
+    }),
+    rootValue: rootResolver,
+    graphiql: true,
+  })
+);
 
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}`);
